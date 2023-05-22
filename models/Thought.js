@@ -1,35 +1,32 @@
-const { Schema, Types } = require('mongoose');
-const reactionSchema = require('./Reaction');
+// need to add date format
+// const mongoose = require("mongoose");
+const {Schema, model} = require('mongoose');
+const dayjs = require("dayjs");
+const reactionSchema = require('./Reaction')
 
-const thoughtsSchema = new Schema(
-    {
-        thoughtText: {
-            type: String,
-            required: true,
-            minlength: 1,
-            maxlength: 280,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        username: {
-            type: String,
-            required: true,
-        },
-        reactions: [reactionSchema]
+const thoughtSchema = new Schema({
+  thoughtText: {
+    type: String,
+    required: true,
+    minLength: 1,
+    maxLength: 280,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    get: function (timestamp) {
+      return dayjs(date).format("MM/DD/YYYY");
     },
-    {
-        toJSON: {
-            getters: true,
-        }
-    }
-);
-
-thoughtSchema.virtual('reactionCount').get(function () {
-    return this.reactions.length;
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  reactions: [reactionSchema ],
 });
 
+const Thought =model("Thought", thoughtSchema);
 
-const Thought = model('thought', postSchema);
+const handleError = (err) => console.error(err);
+
 module.exports = Thought;
