@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
 
-// Schema to create Student model
+// Schema to create the Reaction model
 const reactionSchema = new Schema(
     {
         reactionId: {
@@ -10,7 +10,6 @@ const reactionSchema = new Schema(
         reactionBody: {
             type: String,
             required: true,
-            minlength: 1,
             maxlength: 280,
 
         },
@@ -30,5 +29,5 @@ const reactionSchema = new Schema(
     }
 );
 
-
+// Export the reaction schema
 module.exports = reactionSchema;

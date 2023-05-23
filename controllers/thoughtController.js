@@ -41,16 +41,36 @@ module.exports = {
     },
     // Delete a Thought
     deleteThought(req, res) {
+        // Find and delete the thought document with the specified thoughtId
         Thought.findOneAndDelete({ _id: req.params.thoughtId })
             .then((thought) => {
-                !thought
-                    ? res.status(404).json({ message: 'No Thought with that ID' })
-                    : res.json({ message: 'Thought is deleted!' })
+                // Check if the thought was found
+                if (!thought) {
+                    res.status(404).json({ message: 'No Thought with that ID' })
+                }
+                // Find the user associated with the thought and remove the thought from their thoughts array
+                User.findOneAndUpdate(
+                    { thoughts: req.params.thoughtId },
+                    { $pull: { thoughts: req.params.thoughtId } },
+                    { runValidators: true, new: true }
+                )
+                    .then((user) => {
+                        // Check if the user was found
+                        if (!user) {
+                            res.status(404).json({ message: 'No user found with that thought :(' });
+                        }
+                        else {
+                            // Send a JSON response indicating that the thought is deleted
+                            res.json({ message: 'Thought is deleted!' });
+                        }
+                    });
+
             })
             .catch((err) => res.status(500).json(err));
     },
     // Update a Thought
     updateThought(req, res) {
+        // Find the thought with the specified thoughtId and update it
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $set: req.body },
@@ -63,14 +83,19 @@ module.exports = {
             )
             .catch((err) => res.status(500).json(err));
     },
-    // addReaction to a thought
+    // add Reaction to a thought
     addReaction(req, res) {
+        // Extract the thoughtId, reactionBody, and username from the request parameters and body
+        const { thoughtId } = req.params;
+        const { reactionBody, username } = req.body;
+        // Find the thought with the specified thoughtId and add the new reaction to its reactions array
         Thought.findOneAndUpdate(
-            { _id: req.params.thoughtId },
-            { $addToSet: { reactions: req.body } },
+            { _id: thoughtId },
+            { $addToSet: { reactions: { reactionBody, username } } },
             { runValidators: true, new: true }
         )
             .then((thought) =>
+                // Check if the thought was found
                 !thought
                     ? res
                         .status(404)
@@ -82,9 +107,10 @@ module.exports = {
 
     // Remove Reaction from a thought
     removeReaction(req, res) {
+        // Find the thought with the specified thoughtId and remove the new reaction from its reactions array
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { Reaction: { ReactionId: req.params.ReactionId } } },
+            { $pull: { reactions: { ReactionId: req.params.ReactionId } } },
             { runValidators: true, new: true }
         )
             .then((thought) =>

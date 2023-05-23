@@ -1,46 +1,47 @@
-// need to add id for thoughts and friends
-// const mongoose = require("mongoose");
-const {Schema, model} = require('mongoose');
-const userSchema = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-  },
-  thoughts: [
+const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
+
+// Define the user schema
+const userSchema = new Schema(
     {
-      type: Schema.Types.ObjectId,
-      ref: "Thought",
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+        },
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Thought',
+            },
+        ],
+        friends: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
-  ],
-  friends: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-},
-{
-    toJSON: {
-        virtuals: true
-    },
-    id:false,
-}
+        toJSON: {
+            getters: true,
+        },
+    }
 );
 
-userSchema.virtual('friendCount').get(function(){
-    return this.friends.length
-})
+// Define the virtual property 'friendCount' for user schema
+userSchema.virtual('friendCount').get(function () {
+    return this.friends.length;
+});
 
-const User = model("User", userSchema);
-
-const handleError = (err) => console.error(err);
+// Create the User model based on the user schema
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
