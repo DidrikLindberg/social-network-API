@@ -98,7 +98,7 @@ If you would like to contribute to this project, please contact me using the inf
 
 ## Questions
 
-Email me at: [daevidvo@gmail.com](mailto:lindberg.didrik@gmail.com) or [visit my GitHub](https://www.github.com/Didriklindberg)
+Email me at: [lindberg.didrik@gmail.com](mailto:lindberg.didrik@gmail.com) or [visit my GitHub](https://www.github.com/Didriklindberg)
 
 ---
 
