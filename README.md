@@ -33,7 +33,11 @@
 
 This is a backend API for a social network application. It uses MongoDB as a database and Mongoose as an ODM. It allows users to create, update, and delete users, thoughts, and reactions to thoughts. It also allows users to add friends to their friends list and remove them from their friends list.
 
+
 ![example.gif](./assets/media/Routes.gif)
+
+## Friends endpoints
+![friends](./assets/media/friends.gif)
 
 ---
 
